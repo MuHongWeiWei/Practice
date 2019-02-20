@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText etName;
     private EditText etPassword;
-    private CheckBox cbCheck;
+    private CheckBox cbIsCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         etName = findViewById(R.id.et_name);
         etPassword = findViewById(R.id.et_password);
-        cbCheck = findViewById(R.id.cb_isCheck);
+        cbIsCheck = findViewById(R.id.cb_isCheck);
 
-        Map<String, String> maps = UserInfoUtils.readInfo();
+        Map<String, String> maps = TextInfoUtils.readInfo(this);
+
         String name = maps.get("name");
         String password = maps.get("password");
 
@@ -43,22 +44,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void login(View view) {
-        String name = etName.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        String name = etName.getText().toString();
+        String password = etPassword.getText().toString();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "用戶名或密碼不能為空", Toast.LENGTH_LONG).show();
-        } else {
-            if (cbCheck.isChecked()) {
-                boolean result = UserInfoUtils.saveInfo(name, password);
-                if (result) {
-                    Toast.makeText(this, "保存成功", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "保存失敗", Toast.LENGTH_LONG).show();
-                }
+        if (cbIsCheck.isChecked()) {
+            boolean succes = TextInfoUtils.saveInfo(MainActivity.this, name, password);
+            if (succes) {
+                Toast.makeText(MainActivity.this, "保存成功", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, "請勾選", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "保存失敗", Toast.LENGTH_LONG).show();
             }
+        } else {
+            Toast.makeText(MainActivity.this, "請勾選記住", Toast.LENGTH_LONG).show();
         }
     }
 }
